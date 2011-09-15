@@ -55,7 +55,9 @@ namespace UHEngine.Screens
         List<GatewayObject> gateways = new List<GatewayObject>();
         List<StaticModel> collisionModels = new List<StaticModel>();
 
+        //CollisionCamera camera = null;
         CameraManager cameraManager = null;
+        AnimatedModel player = null;
 
 #if WINDOWS_PHONE
         VirtualThumbsticks thumbsticks = null;
@@ -72,8 +74,12 @@ namespace UHEngine.Screens
         /// </summary>
         public override void LoadContent()
         {
-            //UI Bar
-            //SetupUI();
+            //camera = new CollisionCameraObserver(
+            //    new Vector3(100.0f, 40.0f, 100.0f),
+            //    new Vector3(0.0f, 0.0f, 0.0f),
+            //    45,
+            //    ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Width / ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Height,
+            //    10);
 
             cameraManager = new CameraManager(ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Width,
                 ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Height);
@@ -88,9 +94,9 @@ namespace UHEngine.Screens
 #endif
             SetupLevel();
             SetupObjects();
-            SetupGateways();
-            SetupDistractors();
             SetupKeyboard();
+
+            player = new AnimatedModel(ScreenManager.Game.Content.Load<Model>(@"Player\dude"));
         }
 
         /// <summary>
@@ -210,30 +216,32 @@ namespace UHEngine.Screens
             //    }
             //}
 #endif
+        }
 
 #if WINDOWS_PHONE
+        private void ThumbstickCameraUpdateHelper(GameTime gameTime)
+        {
             thumbsticks.Update();
+            // adjust our velocity base on our virtual thumbstick
+            cameraManager.Velocity += new Vector3(-thumbsticks.LeftThumbstick.X, 0, -thumbsticks.LeftThumbstick.Y) * cameraManager.Acceleration;
 
-            if (thumbsticks.leftPosition.X > 0)
+            // add our velocity to our position to move the ship
+            cameraManager.Position += cameraManager.Velocity;
+
+            // decrease the velocity a little bit for some drag
+            cameraManager.Velocity *= .7f;
+
+            if (thumbsticks.RightThumbstick.Length() > .3f)
             {
-                cameraManager.StrafeForward();
-            }
-            else if (thumbsticks.leftPosition.X < 0)
-            {
-            //    cameraManager.StrafeBackward();
+                // update our ship's rotation based on the right thumbstick
+                cameraManager.rotationLeftRight = -(float)Math.Atan2(
+                    -thumbsticks.RightThumbstick.Y,
+                    thumbsticks.RightThumbstick.X);
             }
 
-            if (thumbsticks.leftPosition.Y > 0)
-            {
-              //  cameraManager.RotateLeft();
-            }
-            else if (thumbsticks.leftPosition.Y < 0)
-            {
-                //cameraManager.RotateRight();
-            }
-        
-#endif
+            cameraManager.Update(collisionModels, gameTime);
         }
+#endif
 
         /// <summary>
         /// Update's all game logic
@@ -241,7 +249,11 @@ namespace UHEngine.Screens
         /// <param name="gameTime"></param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
+#if WINDOWS_PHONE
+            ThumbstickCameraUpdateHelper(gameTime);
+#endif
             cameraManager.Update(collisionModels, gameTime);
+            player.Update(gameTime);
 
             foreach (StaticModel model in actionableObjects)
             {
@@ -255,9 +267,9 @@ namespace UHEngine.Screens
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
         {
             ResetRenderStates();
-            DrawPickableObjects(gameTime);
-            DrawGatewayObjects(gameTime);
+            DrawObjects(gameTime);
             DrawLevel(gameTime);
+            player.Draw(gameTime);
 
 #if WINDOWS_PHONE
             thumbsticks.Draw();
@@ -586,32 +598,9 @@ namespace UHEngine.Screens
         {
             List<string> tempItemList = new List<string>();
             List<Vector3> tempPosition = new List<Vector3>();
-            tempItemList.Add(@"PickableObjects\barrel");
-            tempPosition.Add(new Vector3(100, 0, 100));
-            tempItemList.Add(@"PickableObjects\bike");
-            tempPosition.Add(new Vector3(300, 0, 100));
-            tempItemList.Add(@"PickableObjects\chair");
-            tempPosition.Add(new Vector3(10, 0, 100));
-            tempItemList.Add(@"PickableObjects\drum");
-            tempPosition.Add(new Vector3(400, 0, 100));
-            tempItemList.Add(@"PickableObjects\glasses");
-            tempPosition.Add(new Vector3(100, 0, 500));
-            tempItemList.Add(@"PickableObjects\horse");
-            tempPosition.Add(new Vector3(100, 0, 200));
-            tempItemList.Add(@"PickableObjects\key");
-            tempPosition.Add(new Vector3(100, 0, 1000));
-            tempItemList.Add(@"PickableObjects\leaf");
-            tempPosition.Add(new Vector3(10, 0, 10));
-            tempItemList.Add(@"PickableObjects\suitcase");
-            tempPosition.Add(new Vector3(160, 0, 160));
-            tempItemList.Add(@"PickableObjects\airplane");
-            tempPosition.Add(new Vector3(190, 0, 100));
+           
             tempItemList.Add(@"PickableObjects\table");
             tempPosition.Add(new Vector3(150, 0, 100));
-            tempItemList.Add(@"PickableObjects\tank");
-            tempPosition.Add(new Vector3(100, 0, 250));
-            tempItemList.Add(@"PickableObjects\wheel");
-            tempPosition.Add(new Vector3(200, 0, 400));
 
             Vector2 currentPosition = baseUIIconPosition;
 
@@ -643,38 +632,9 @@ namespace UHEngine.Screens
             }
         }
 
-        private void SetupDistractors()
-        {
-            DistractorObject distractorObject = new DistractorObject(ScreenManager.Game.Content.Load<Model>(@"PickableObjects\wheel"), new Vector3(200, 30, 500));
-            distractorObject.Action = () => distractorObject.Position = new Vector3(distractorObject.Position.X, 30, distractorObject.Position.Z);
-
-            actionableObjects.Add(distractorObject);
-            collisionModels.Add(distractorObject);
-            modelWorldTransforms.Add(distractorObject.transforms);
-            insideBoundingSpheres.Add(distractorObject.model.Meshes[distractorObject.model.Root.Index].BoundingSphere);
-        }
-
-        private void SetupGateways()
-        {
-            GatewayObject gatewayObject = new GatewayObject(
-                ScreenManager.Game.Content.Load<Model>(@"PickableObjects\barrel"),
-                new Vector3(200, 0, 100));
-
-            gatewayObject.Keys.Add((FindableObject)actionableObjects.Where(o =>
-            {
-                FindableObject fo = o as FindableObject;
-                if (fo == null)
-                    return false;
-
-                return fo.Name == "table";
-            }).First());
-
-            gateways.Add(gatewayObject);
-            collisionModels.Add(gatewayObject);
-        }
-
         private void SetupKeyboard()
         {
+#if WINDOWS
             ScreenManager.InputManager.AddInput(InputAction.MoveLeft, Microsoft.Xna.Framework.Input.Keys.A);
             ScreenManager.InputManager.AddInput(InputAction.MoveRight, Microsoft.Xna.Framework.Input.Keys.D);
             ScreenManager.InputManager.AddInput(InputAction.MoveUp, Microsoft.Xna.Framework.Input.Keys.W);
@@ -683,24 +643,17 @@ namespace UHEngine.Screens
             ScreenManager.InputManager.AddInput(InputAction.RotateRight, Microsoft.Xna.Framework.Input.Keys.Right);
             ScreenManager.InputManager.AddInput(InputAction.LookUp, Microsoft.Xna.Framework.Input.Keys.Up);
             ScreenManager.InputManager.AddInput(InputAction.LookDown, Microsoft.Xna.Framework.Input.Keys.Down);
+#endif
         }
         #endregion
 
         #region DrawHelpers
-        private void DrawPickableObjects(GameTime gameTime)
-        {
-            foreach (StaticModel model in actionableObjects)
-            {
-                model.Draw(gameTime);
-            }
-        }
 
-        private void DrawGatewayObjects(GameTime gameTime)
+        private void DrawObjects(GameTime gameTime)
         {
-            foreach (GatewayObject gateway in gateways)
+            foreach (StaticModel theObject in actionableObjects)
             {
-                if (gateway.IsActive)
-                    gateway.Draw(gameTime);
+                theObject.Draw(gameTime);
             }
         }
 

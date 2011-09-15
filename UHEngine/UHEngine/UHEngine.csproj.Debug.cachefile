@@ -11,6 +11,7 @@ Content\PickableObjects\airplane.xnb
 Content\PickableObjects\horse.xnb
 Content\PickableObjects\tank.xnb
 Content\PickableObjects\wheel.xnb
+Content\Levels\uhEnginePlayground.xnb
 Content\Menu\menuItems.xnb
 Content\UI\objectsFoundFont.xnb
 Content\cursor.xnb
@@ -118,8 +119,12 @@ Content\table_2k_color_0.xnb
 Content\toy_airplane_1k_color_0.xnb
 Content\toy_horse_2k_color_0.xnb
 Content\toy_tank_1k_color_0.xnb
-Content\Levels\uhEnginePlayground.xnb
 Content\null_color_0.xnb
+Content\Player\head_0.xnb
+Content\Player\jacket_0.xnb
+Content\Player\pants_0.xnb
+Content\Player\upBodyC_0.xnb
+Content\Player\dude.xnb
 Content\Sounds\baum_tree.wma
 Content\Sounds\bild_picture.wma
 Content\Sounds\blatt_leaf.wma

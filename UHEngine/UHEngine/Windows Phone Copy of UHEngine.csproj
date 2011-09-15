@@ -68,6 +68,7 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="CameraManagement\CameraManager.cs" />
+    <Compile Include="CoreObjects\AnimatedModel.cs" />
     <Compile Include="CoreObjects\DistractorObject.cs" />
     <Compile Include="CoreObjects\IActionable.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\..\BoxCollider\Windows Phone Copy of BoxColliderWindows.csproj">
       <Project>{ab94c107-404a-4ffc-b42c-5a00b5706713}</Project>
       <Name>Windows Phone Copy of BoxColliderWindows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SkinnedModel\SkinnedModelPhone.csproj">
+      <Project>{B69C5592-21A3-4B18-B70C-857CBF176BF2}</Project>
+      <Name>SkinnedModelPhone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TrianglePickingPipeline\TrianglePickingPipeline.csproj">
       <Project>{35D4955B-8D3A-492A-B76B-2306A50C44F8}</Project>

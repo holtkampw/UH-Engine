@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CameraManagement\CameraManager.cs" />
+    <Compile Include="CoreObjects\AnimatedModel.cs" />
     <Compile Include="CoreObjects\DistractorObject.cs" />
     <Compile Include="CoreObjects\IActionable.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -107,6 +108,10 @@
     <ProjectReference Include="..\..\BoxCollider\BoxColliderWindows.csproj">
       <Project>{9B875652-0591-4CDA-8B98-BAD32767CCC4}</Project>
       <Name>BoxColliderWindows</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SkinnedModel\SkinnedModelWindows.csproj">
+      <Project>{0D41E29B-829F-4255-BCA5-64DC2677DA6D}</Project>
+      <Name>SkinnedModelWindows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TrianglePickingPipeline\TrianglePickingPipeline.csproj">
       <Project>{35D4955B-8D3A-492A-B76B-2306A50C44F8}</Project>

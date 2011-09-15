@@ -74,7 +74,6 @@ namespace UHEngine.CoreObjects
         {
             this.model = newModel;
             
-            
             game = ScreenManager.Game;
             SetupModel(position);
             CollisionMesh = new CollisionMesh(model, 4, position);

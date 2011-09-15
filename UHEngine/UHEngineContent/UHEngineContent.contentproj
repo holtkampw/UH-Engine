@@ -30,92 +30,8 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PickableObjects\barrel.fbx">
-      <Name>barrel</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\bike.fbx">
-      <Name>bike</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\chair.fbx">
-      <Name>chair</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\drum.fbx">
-      <Name>drum</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\glasses.fbx">
-      <Name>glasses</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\key.fbx">
-      <Name>key</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\leaf.fbx">
-      <Name>leaf</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\suitcase.fbx">
-      <Name>suitcase</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="PickableObjects\table.fbx">
       <Name>table</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\airplane.fbx">
-      <Name>airplane</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\horse.fbx">
-      <Name>horse</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\tank.fbx">
-      <Name>tank</Name>
-      <Importer>FbxImporter</Importer>
-      <Processor>TrianglePickingProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PickableObjects\wheel.fbx">
-      <Name>wheel</Name>
       <Importer>FbxImporter</Importer>
       <Processor>TrianglePickingProcessor</Processor>
     </Compile>
@@ -172,6 +88,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SkinnedModelPipeline\SkinnedModelPipeline.csproj">
+      <Project>{4636C7E1-B845-4B83-B96D-64A11B8A4515}</Project>
+      <Name>SkinnedModelPipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TrianglePickingPipeline\TrianglePickingPipeline.csproj">
       <Project>{35D4955B-8D3A-492A-B76B-2306A50C44F8}</Project>
       <Name>TrianglePickingPipeline</Name>
@@ -635,6 +555,13 @@
       <Name>uhEnginePlayground</Name>
       <Importer>FbxImporter</Importer>
       <Processor>TrianglePickingProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Player\dude.fbx">
+      <Name>dude</Name>
+      <Importer>FbxImporter</Importer>
+      <Processor>SkinnedModelProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

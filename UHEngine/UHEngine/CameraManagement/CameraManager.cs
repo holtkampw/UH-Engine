@@ -21,8 +21,8 @@ namespace UHEngine.CameraManagement
         Matrix rotationMatrix;
         private Vector3 position;
         Vector3 LookAtPoint;
-        float rotationLeftRight;
-        float rotationUpDown;
+        public float rotationLeftRight;
+        public float rotationUpDown;
         Vector3 cameraReference = new Vector3(0, 0, 10);
         Vector3 newPosition;
         public BoundingSphere Sphere;
@@ -33,7 +33,11 @@ namespace UHEngine.CameraManagement
         int RightMovementAmount = -1;
         float RotationAmount = 0.04f;
         Vector3 tempV;
-        bool cameraMoved = true;
+
+        //New
+        public Vector3 Velocity { get; set;}
+        public float Acceleration { get; set; }
+        
 
         public Vector3 Position
         {
@@ -42,7 +46,6 @@ namespace UHEngine.CameraManagement
             {
                 position = value;
                 newPosition = value;
-                cameraMoved = true;
             }
         }
         #endregion
@@ -53,6 +56,8 @@ namespace UHEngine.CameraManagement
             //tmp position
             Position = Vector3.Zero;
             newPosition = Vector3.Zero;
+
+            Acceleration = 0.5f;
 
             //tmp lookAtPoint
             LookAtPoint = Vector3.Zero;
@@ -90,7 +95,6 @@ namespace UHEngine.CameraManagement
             newPosition.Z += tempV.Z;
             newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-            cameraMoved = true;
         }
 
         public void StrafeRight()
@@ -102,7 +106,6 @@ namespace UHEngine.CameraManagement
             newPosition.Z += tempV.Z;
             newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-            cameraMoved = true;
         }
 
         public void StrafeForward()
@@ -114,7 +117,6 @@ namespace UHEngine.CameraManagement
             newPosition.Z += tempV.Z;
             newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-            cameraMoved = true;
         }
 
         public void StrafeBackward()
@@ -126,83 +128,84 @@ namespace UHEngine.CameraManagement
             newPosition.Z += tempV.Z;
             newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-            cameraMoved = true;
         }
 
         public void RotateLeft()
         {
             rotationLeftRight += RotationAmount;
-            cameraMoved = true;
         }
 
         public void RotateRight()
         {
             rotationLeftRight -= RotationAmount;
-            cameraMoved = true;
         }
 
         public void RotateUp()
         {
             rotationUpDown += RotationAmount;
             rotationUpDown = MathHelper.Clamp(rotationUpDown, -0.5f, 0.5f);
-            cameraMoved = true;
         }
 
         public void RotateDown()
         {
             rotationUpDown += RotationAmount;
             rotationUpDown = MathHelper.Clamp(rotationUpDown, -0.5f, 0.5f);
-            cameraMoved = true;
         }
 
         public void SetPosition(Vector3 position)
         {
             this.Position = position;
-            cameraMoved = true;
         }
 
         public void SetLookAtPoint(Vector3 lookAtPoint)
         {
             this.LookAtPoint = lookAtPoint;
-            cameraMoved = true;
         }
         #endregion
 
         #region Update
         public void Update(List<StaticModel> collisionModels, GameTime gameTime)
         {
-            Vector3 collideNewPos;
+            //Vector3 collideNewPos;
 
-            if (cameraMoved)
-            {
-                cameraMoved = false;
-                for (int i = 0; i < collisionModels.Count; i++)
-                {
-                    GatewayObject gateway = collisionModels[i] as GatewayObject;
+      
+            //    for (int i = 0; i < collisionModels.Count; i++)
+            //    {
+            //        GatewayObject gateway = collisionModels[i] as GatewayObject;
 
-                    if (gateway != null && !gateway.IsActive)
-                        continue;
+            //        if (gateway != null && !gateway.IsActive)
+            //            continue;
 
-                    if (collisionModels[i].CollisionMesh.BoxMove(box, Position,
-                            newPosition,
-                            1.0f, 0.0f, 3, out collideNewPos))
-                    {
-                        newPosition = collideNewPos;
-                        // i = 0;
-                    }
-                }
+            //        if (collisionModels[i].CollisionMesh.BoxMove(box, Position,
+            //                newPosition,
+            //                1.0f, 0.0f, 3, out collideNewPos))
+            //        {
+            //            newPosition = collideNewPos;
+            //            // i = 0;
+            //        }
+            //    }
 
-                Position = newPosition;
-                rotationMatrix = Matrix.CreateRotationX(rotationUpDown) * Matrix.CreateRotationY(rotationLeftRight);
+           // Position = newPosition;
 
-                //For rotating camera position around look at point
-                Vector3 cameraRotatedPosition = Vector3.Transform(cameraReference, rotationMatrix);
-                //Vector3 cameraRotatedUpVector = Vector3.Transform(Vector3.Up, rotationMatrix);
-                LookAtPoint = Position + cameraRotatedPosition;
-                ViewMatrix = Matrix.CreateLookAt(Position, LookAtPoint, Vector3.Up);
-            }
+            forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
+            tempV = Vector3.Transform(Velocity, forwardMovement);
+            position.Z += tempV.Z;
+            position.X += tempV.X;
+            Sphere.Center = position;
+
+            rotationMatrix = Matrix.CreateRotationX(rotationUpDown) * Matrix.CreateRotationY(rotationLeftRight);
+
+            //For rotating camera position around look at point
+            Vector3 cameraRotatedPosition = Vector3.Transform(cameraReference, rotationMatrix);
+            LookAtPoint = Position + cameraRotatedPosition;
+            ViewMatrix = Matrix.CreateLookAt(Position, LookAtPoint, Vector3.Up);
+
 
         }
+
+
+
+
         #endregion
     }
 }
