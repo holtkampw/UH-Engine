@@ -207,17 +207,13 @@ namespace UHEngine.CoreObjects
                 }
 
                 transforms = Matrix.CreateScale(currentGlowScale) *
-                    //rotationMatrixX *
                     rotationMatrixY *
-                    //rotationMatrixZ * 
                     Matrix.CreateTranslation(Position);
             }
             else
             {
                 transforms = Matrix.CreateScale(scale) *
-                    //rotationMatrixX *
                         rotationMatrixY *
-                    //rotationMatrixZ * 
                         Matrix.CreateTranslation(Position);
             }
         }
@@ -227,20 +223,20 @@ namespace UHEngine.CoreObjects
             if (model != null)
             {
                 // Draw the model. A model can have multiple meshes, so loop.
-                foreach (ModelMesh mesh in model.Meshes)
+                for (int i = 0; i < model.Meshes.Count; i++ )
                 {
                     // This is where the mesh orientation is set, as well 
                     // as our camera and projection.
-                    foreach (BasicEffect effect in mesh.Effects)
+                    foreach (BasicEffect effect in model.Meshes[i].Effects)
                     {
                         //effect.CurrentTechnique.
                         effect.EnableDefaultLighting();
-                        effect.World = boneTransforms[mesh.ParentBone.Index] * transforms;
+                        effect.World = boneTransforms[model.Meshes[i].ParentBone.Index] * transforms;
                         effect.View = cameraManager.ViewMatrix;
                         effect.Projection = cameraManager.ProjectionMatrix;
                     }
                     // Draw the mesh, using the effects set above.
-                    mesh.Draw();
+                    model.Meshes[i].Draw();
                 }
             }
         }

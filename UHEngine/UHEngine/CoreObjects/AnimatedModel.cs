@@ -71,9 +71,9 @@ namespace UHEngine.CoreObjects
         {
 
             // Render the skinned mesh.
-            foreach (ModelMesh mesh in Model.Meshes)
+            for (int i = 0; i < Model.Meshes.Count; i++)
             {
-                foreach (SkinnedEffect effect in mesh.Effects)
+                foreach (SkinnedEffect effect in Model.Meshes[i].Effects)
                 {
                     effect.SetBoneTransforms(bones);
 
@@ -86,7 +86,7 @@ namespace UHEngine.CoreObjects
                     effect.SpecularPower = 16;
                 }
 
-                mesh.Draw();
+                Model.Meshes[i].Draw();
             }
         }
         #endregion
