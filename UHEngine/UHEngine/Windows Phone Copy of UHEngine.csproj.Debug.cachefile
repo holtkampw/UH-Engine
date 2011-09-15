@@ -11,7 +11,8 @@ Content\PickableObjects\airplane.xnb
 Content\PickableObjects\horse.xnb
 Content\PickableObjects\tank.xnb
 Content\PickableObjects\wheel.xnb
-Content\Menu\mainMenu.xnb
+Content\Menu\menuItems.xnb
+Content\UI\objectsFoundFont.xnb
 Content\cursor.xnb
 Content\UI\background.xnb
 Content\Menu\controls.xnb
@@ -69,8 +70,10 @@ Content\UI\lock_icon.xnb
 Content\Menu\creditsIcon.xnb
 Content\Menu\exitIcon.xnb
 Content\Menu\playGameIcon.xnb
-Content\Menu\menuItems.xnb
-Content\UI\objectsFoundFont.xnb
+Content\Menu\dark_brick_wall.xnb
+Content\Thumbsticks\BackgroundStick.xnb
+Content\Thumbsticks\LStick.xnb
+Content\Thumbsticks\RStick.xnb
 Content\Sounds\baum_tree.xnb
 Content\Sounds\bild_picture.xnb
 Content\Sounds\blatt_leaf.xnb
@@ -115,6 +118,8 @@ Content\table_2k_color_0.xnb
 Content\toy_airplane_1k_color_0.xnb
 Content\toy_horse_2k_color_0.xnb
 Content\toy_tank_1k_color_0.xnb
+Content\Levels\uhEnginePlayground.xnb
+Content\null_color_0.xnb
 Content\Sounds\baum_tree.wma
 Content\Sounds\bild_picture.wma
 Content\Sounds\blatt_leaf.wma

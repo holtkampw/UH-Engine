@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using System.Text;
 
-namespace GermanGame.EnumHelper
+namespace UHEngine.EnumHelper
 {
     public sealed class EnumHelper
     {

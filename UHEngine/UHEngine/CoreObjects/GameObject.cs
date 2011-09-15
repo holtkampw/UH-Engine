@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GermanGame.ScreenManagement;
+using UHEngine.ScreenManagement;
 #endregion
 
-namespace GermanGame.CoreObjects
+namespace UHEngine.CoreObjects
 {
     public abstract class GameObject
     {

@@ -7,15 +7,15 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using GermanGame.CameraManagement;
-using GermanGame.ScreenManagement;
+using UHEngine.CameraManagement;
+using UHEngine.ScreenManagement;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using GermanGame.UI;
+using UHEngine.UI;
 using BoxCollider;
 #endregion
 
-namespace GermanGame.CoreObjects
+namespace UHEngine.CoreObjects
 {
     public class StaticModel
     {

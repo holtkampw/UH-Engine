@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
-using GermanGame.UI;
-using GermanGame.ScreenManagement;
+using UHEngine.UI;
+using UHEngine.ScreenManagement;
 
-namespace GermanGame.CoreObjects
+namespace UHEngine.CoreObjects
 {
     public class FindableObject : StaticModel, IActionable
     {

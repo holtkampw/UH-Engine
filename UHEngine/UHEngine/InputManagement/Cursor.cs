@@ -13,11 +13,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GermanGame.ScreenManagement;
-using GermanGame.CoreObjects;
+using UHEngine.ScreenManagement;
+using UHEngine.CoreObjects;
 #endregion
 
-namespace GermanGame.InputManagement
+namespace UHEngine.InputManagement
 {
     /// <summary>
     /// Cursor is a DrawableGameComponent that draws a cursor on the screen. It works
@@ -106,6 +106,7 @@ namespace GermanGame.InputManagement
         // and then End.
         public override void Draw(GameTime gameTime)
         {
+#if !WINDOWS_PHONE
             ScreenManager.SpriteBatch.Begin();
 
             // use textureCenter as the origin of the sprite, so that the cursor is 
@@ -117,6 +118,7 @@ namespace GermanGame.InputManagement
             ScreenManager.SpriteBatch.End();
 
             base.Draw(gameTime);
+#endif
         }
 
         #endregion

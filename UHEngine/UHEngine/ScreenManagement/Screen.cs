@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GermanGame.InputManagement;
+using UHEngine.InputManagement;
 #endregion
 
 
-namespace GermanGame.ScreenManagement
+namespace UHEngine.ScreenManagement
 {
     public enum ScreenStatus { Visible, Disabled, Overlay }
 

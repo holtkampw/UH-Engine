@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using GermanGame.ScreenManagement;
+using UHEngine.ScreenManagement;
 
-namespace GermanGame.UI
+namespace UHEngine.UI
 {
     public enum UIItemStatus { Inactive, Hover, Click }
 
     public class UIItem
     {
+        #region Fields
         public Texture2D Texture { get; set; }
         public Vector2 Position { get; set; }
         public Rectangle Bounds { get; set; }
@@ -27,7 +28,9 @@ namespace GermanGame.UI
 
         public int SpriteSizeX = 60;
         public int SpriteSizeY = 0;
+        #endregion
 
+        #region Initialization
         public UIItem(Texture2D texture, Vector2 position)
         {
             Helper(texture, position);
@@ -63,11 +66,14 @@ namespace GermanGame.UI
             this.Status = UIItemStatus.Inactive;
 
         }
+        #endregion
 
+        #region Draw
         public virtual void Draw(GameTime gameTime)
         {
             if (Found)
             {
+                //Draw the correct Sprite
                 switch (Status)
                 {
                     case UIItemStatus.Inactive:
@@ -83,10 +89,12 @@ namespace GermanGame.UI
             } else
                 ScreenManager.SpriteBatch.Draw(backgroundTexture, Bounds, InactiveSource, Color.White);
 
+            //Different sprite for a used UIItem
             if(!Found)
                 ScreenManager.SpriteBatch.Draw(NotFoundTexture, Position, Color.White);
             else
                 ScreenManager.SpriteBatch.Draw(Texture, Position, Color.White);
         }
+        #endregion
     }
 }

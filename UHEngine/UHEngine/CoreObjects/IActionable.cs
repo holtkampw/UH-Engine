@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GermanGame.CoreObjects
+namespace UHEngine.CoreObjects
 {
     public interface IActionable
     {

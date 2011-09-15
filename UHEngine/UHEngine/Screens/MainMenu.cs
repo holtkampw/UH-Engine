@@ -3,27 +3,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GermanGame.ScreenManagement;
+using UHEngine.ScreenManagement;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using GermanGame.InputManagement;
-using GermanGame.UI;
+using UHEngine.InputManagement;
+using UHEngine.UI;
 
-namespace GermanGame.Screens
+namespace UHEngine.Screens
 {
 
     class MainMenu : Screen
     {
 
-        #region Variables
+        #region Fields
         SpriteFont menuFont;
         Texture2D background;
         List<MenuItem> menuItems = new List<MenuItem>();
-        Vector2 baseLocation = new Vector2(100, 300);
+        Vector2 baseLocation = new Vector2(20, 80);
         Vector2 offset = new Vector2(0, 90);
         Vector2 currentPosition;
         Vector2 oneOffset = new Vector2(0, 2);
-        Vector2 largeIconPosition = new Vector2(700, 200);
+        Vector2 largeIconPosition = new Vector2(200, 0);
+        Rectangle backgroundRect = new Rectangle(0, 0, ScreenManager.GraphicsDeviceManager.PreferredBackBufferWidth, ScreenManager.GraphicsDeviceManager.PreferredBackBufferHeight);
 
         List<MainMenuUI> items = new List<MainMenuUI>();
         #endregion
@@ -33,10 +34,12 @@ namespace GermanGame.Screens
         {
 
         }
+        #endregion
 
+        #region LoadContent
         public override void LoadContent()
         {
-            background = ScreenManager.Game.Content.Load<Texture2D>(@"Menu\mainMenu");
+            background = ScreenManager.Game.Content.Load<Texture2D>(@"Menu\dark_brick_wall");
             menuFont = ScreenManager.Game.Content.Load<SpriteFont>(@"Menu\menuItems");
 
             currentPosition = baseLocation;
@@ -71,24 +74,25 @@ namespace GermanGame.Screens
         }
         #endregion
 
+        #region Draw
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
         {
             ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            ScreenManager.SpriteBatch.Draw(background, Vector2.Zero, Color.White);
+            ScreenManager.SpriteBatch.Draw(background, backgroundRect, Color.White);
 
             
             for (int i = 0; i < items.Count; i++)
             {
-               // ScreenManager.SpriteBatch.DrawString(menuFont, menuItems[i].Name, menuItems[i].Position, Color.White);
-                currentPosition += offset;
-                
+                currentPosition += offset;             
                 items[i].Draw(gameTime);
             }
 
             ScreenManager.SpriteBatch.End();
         }
+        #endregion
 
+        #region Update
         public override void HandleInput()
         {
             ScreenManager.InputManager.Update();
@@ -105,7 +109,6 @@ namespace GermanGame.Screens
                (int)ScreenManager.Cursor.Position.Y);
 
             Rectangle mouseRect = new Rectangle(mouse.X, mouse.Y, 10, 10);
-            //ResetButtonStates();
                 //Check Items
             for (int i = 0; i < items.Count; i++)
             {
@@ -130,6 +133,7 @@ namespace GermanGame.Screens
                 
             }
         }
+        #endregion
 
         #region Actions
 
@@ -145,13 +149,14 @@ namespace GermanGame.Screens
 
         #endregion
 
+        #region Helpers
         private void ResetButtonStates()
         {
             for (int i = 0; i < items.Count; i++)
             {
                 items[i].Status = UIItemStatus.Inactive;
-                items[i].Found = true; //FIX THIS - Remove before Done! (not all items are always found)
             }
         }
+        #endregion
     }
 }

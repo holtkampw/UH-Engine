@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GermanGame.CoreObjects
+namespace UHEngine.CoreObjects
 {
     class DistractorObject : StaticModel, IActionable
     {

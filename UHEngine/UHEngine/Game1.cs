@@ -9,11 +9,11 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using GermanGame.ScreenManagement;
-using GermanGame.Screens;
+using UHEngine.ScreenManagement;
+using UHEngine.Screens;
 #endregion
 
-namespace GermanGame
+namespace UHEngine
 {
     /// <summary>
     /// This is the main type for your game
@@ -26,6 +26,7 @@ namespace GermanGame
 
         public Game1()
         {
+            //Initialization of Entire Game
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -53,16 +54,18 @@ namespace GermanGame
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             screenManager = new ScreenManager(this);
+
+            //Setup Input Device
             ScreenManager.InputManager = new InputManagement.InputManager();
 
+            //Add Global Keys
+#if WINDOWS
             ScreenManager.InputManager.AddInput(InputManagement.InputAction.ExitGame, Keys.Escape);
             ScreenManager.InputManager.AddInput(InputManagement.InputAction.PlaySound, Keys.Space);
+#endif
 
-            //screenManager.ShowScreen(new MainMenu());
+            //Show Start Screen
             screenManager.ShowScreen(new MainMenu());
-            //screenManager.ShowScreen(new MainMenu());
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -81,11 +84,12 @@ namespace GermanGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
+            // TEll the Screen Manager to handle updates
             screenManager.Update(gameTime);
             base.Update(gameTime);
         }
@@ -98,7 +102,7 @@ namespace GermanGame
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            // Tell the ScreenManager to handle drawing
             screenManager.Draw(gameTime);
             base.Draw(gameTime);
         }

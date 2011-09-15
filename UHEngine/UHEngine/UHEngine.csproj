@@ -84,6 +84,7 @@
     <Compile Include="CoreObjects\FindableObject.cs" />
     <Compile Include="CoreObjects\GameObject.cs" />
     <Compile Include="CoreObjects\StaticModel.cs" />
+    <Compile Include="InputManagement\VirtualThumbsticks.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

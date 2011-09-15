@@ -1,6 +1,6 @@
 using System;
 
-namespace GermanGame
+namespace UHEngine
 {
 #if WINDOWS || XBOX
     static class Program

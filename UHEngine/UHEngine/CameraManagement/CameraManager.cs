@@ -6,11 +6,11 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BoxCollider;
-using GermanGame.CoreObjects;
+using UHEngine.CoreObjects;
 
 #endregion
 
-namespace GermanGame.CameraManagement
+namespace UHEngine.CameraManagement
 {
     public class CameraManager : CollisionTreeElemDynamic
     {
@@ -26,6 +26,14 @@ namespace GermanGame.CameraManagement
         Vector3 cameraReference = new Vector3(0, 0, 10);
         Vector3 newPosition;
         public BoundingSphere Sphere;
+        Matrix forwardMovement;
+        int ForwardMovementAmount = -1;
+        int BackwardMovementAmount = 1;
+        int LeftMovementAmount = 1;
+        int RightMovementAmount = -1;
+        float RotationAmount = 0.04f;
+        Vector3 tempV;
+        bool cameraMoved = true;
 
         public Vector3 Position
         {
@@ -34,6 +42,7 @@ namespace GermanGame.CameraManagement
             {
                 position = value;
                 newPosition = value;
+                cameraMoved = true;
             }
         }
         #endregion
@@ -74,114 +83,88 @@ namespace GermanGame.CameraManagement
         #region Manipulation
         public void StrafeLeft()
         {
-            int amount = 1;
-            //Position = new Vector3(Position.X + amount, Position.Y, Position.Z);
-            //LookAtPoint = new Vector3(LookAtPoint.X + amount, LookAtPoint.Y, LookAtPoint.Z);
-
-            Matrix forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
-            Vector3 v = new Vector3(amount, 0, 0);
-            v = Vector3.Transform(v, forwardMovement);
+            forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
+            tempV = new Vector3(LeftMovementAmount, 0, 0);
+            tempV = Vector3.Transform(tempV, forwardMovement);
             newPosition = Position;
-            newPosition.Z += v.Z;
-            newPosition.X += v.X;
+            newPosition.Z += tempV.Z;
+            newPosition.X += tempV.X;
             Sphere.Center = newPosition;
+            cameraMoved = true;
         }
 
         public void StrafeRight()
         {
-            int amount = -1;
-
-            Matrix forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
-            Vector3 v = new Vector3(amount, 0, 0);
-            v = Vector3.Transform(v, forwardMovement);
+            forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
+            tempV = new Vector3(RightMovementAmount, 0, 0);
+            tempV = Vector3.Transform(tempV, forwardMovement);
             newPosition = Position;
-            newPosition.Z += v.Z;
-            newPosition.X += v.X;
+            newPosition.Z += tempV.Z;
+            newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-
-            //Position = new Vector3(Position.X + amount, Position.Y, Position.Z);
-            //LookAtPoint = new Vector3(LookAtPoint.X + amount, LookAtPoint.Y, LookAtPoint.Z);
-        }
-
-        public void StrafeY(float amount)
-        {
-            //Position = new Vector3(Position.X, Position.Y + amount, Position.Z);
-            //LookAtPoint = new Vector3(LookAtPoint.X, LookAtPoint.Y + amount, LookAtPoint.Z);
+            cameraMoved = true;
         }
 
         public void StrafeForward()
         {
-            int amount = 1;
-
-            Matrix forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
-            Vector3 v = new Vector3(0, 0, amount);
-            v = Vector3.Transform(v, forwardMovement);
+            forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
+            tempV = new Vector3(0, 0, ForwardMovementAmount);
+            tempV = Vector3.Transform(tempV, forwardMovement);
             newPosition = Position;
-            newPosition.Z += v.Z;
-            newPosition.X += v.X;
+            newPosition.Z += tempV.Z;
+            newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-            //Position = new Vector3(Position.X, Position.Y, Position.Z + amount);
-            //LookAtPoint = new Vector3(LookAtPoint.X, LookAtPoint.Y, LookAtPoint.Z + amount);
+            cameraMoved = true;
         }
 
         public void StrafeBackward()
         {
-            int amount = -1;
-
-            Matrix forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
-            Vector3 v = new Vector3(0, 0, amount);
-            v = Vector3.Transform(v, forwardMovement);
+            forwardMovement = Matrix.CreateRotationY(rotationLeftRight);
+            tempV = new Vector3(0, 0, BackwardMovementAmount);
+            tempV = Vector3.Transform(tempV, forwardMovement);
             newPosition = Position;
-            newPosition.Z += v.Z;
-            newPosition.X += v.X;
+            newPosition.Z += tempV.Z;
+            newPosition.X += tempV.X;
             Sphere.Center = newPosition;
-
-            //Position = new Vector3(Position.X, Position.Y, Position.Z + amount);
-            //LookAtPoint = new Vector3(LookAtPoint.X, LookAtPoint.Y, LookAtPoint.Z + amount);
+            cameraMoved = true;
         }
 
         public void RotateLeft()
         {
-            float amount = 0.04f;
-            rotationLeftRight += amount;
-            //position = new Vector3(position.X + amount, position.Y, position.Z);
+            rotationLeftRight += RotationAmount;
+            cameraMoved = true;
         }
 
         public void RotateRight()
         {
-            float amount = -0.04f;
-            rotationLeftRight += amount;
-            //position = new Vector3(position.X + amount, position.Y, position.Z);
-        }
-
-        public void RotateY(float amount)
-        {
-            rotationUpDown -= amount;
-            //position = new Vector3(position.X, position.Y + amount, position.Z);
+            rotationLeftRight -= RotationAmount;
+            cameraMoved = true;
         }
 
         public void RotateUp()
         {
-            float amount = -0.04f;
-            rotationUpDown += amount;
+            rotationUpDown += RotationAmount;
             rotationUpDown = MathHelper.Clamp(rotationUpDown, -0.5f, 0.5f);
+            cameraMoved = true;
         }
 
         public void RotateDown()
         {
-            float amount = 0.04f;
-            rotationUpDown += amount;
+            rotationUpDown += RotationAmount;
             rotationUpDown = MathHelper.Clamp(rotationUpDown, -0.5f, 0.5f);
+            cameraMoved = true;
         }
 
         public void SetPosition(Vector3 position)
         {
             this.Position = position;
+            cameraMoved = true;
         }
 
         public void SetLookAtPoint(Vector3 lookAtPoint)
         {
             this.LookAtPoint = lookAtPoint;
+            cameraMoved = true;
         }
         #endregion
 
@@ -190,41 +173,35 @@ namespace GermanGame.CameraManagement
         {
             Vector3 collideNewPos;
 
-            for (int i = 0; i < collisionModels.Count; i++)
+            if (cameraMoved)
             {
-                GatewayObject gateway = collisionModels[i] as GatewayObject;
-
-                if (gateway != null && !gateway.IsActive)
-                    continue;
-
-                if ( collisionModels[i].CollisionMesh.BoxMove(box, Position,//new Vector3(Position.X, 0, Position.Z),
-                    //new Vector3(newPosition.X, 0, newPosition.Z),
-                        newPosition,
-                        1.0f, 0.0f, 3, out collideNewPos))
+                cameraMoved = false;
+                for (int i = 0; i < collisionModels.Count; i++)
                 {
-                    newPosition = collideNewPos;
-                   // i = 0;
+                    GatewayObject gateway = collisionModels[i] as GatewayObject;
+
+                    if (gateway != null && !gateway.IsActive)
+                        continue;
+
+                    if (collisionModels[i].CollisionMesh.BoxMove(box, Position,
+                            newPosition,
+                            1.0f, 0.0f, 3, out collideNewPos))
+                    {
+                        newPosition = collideNewPos;
+                        // i = 0;
+                    }
                 }
+
+                Position = newPosition;
+                rotationMatrix = Matrix.CreateRotationX(rotationUpDown) * Matrix.CreateRotationY(rotationLeftRight);
+
+                //For rotating camera position around look at point
+                Vector3 cameraRotatedPosition = Vector3.Transform(cameraReference, rotationMatrix);
+                //Vector3 cameraRotatedUpVector = Vector3.Transform(Vector3.Up, rotationMatrix);
+                LookAtPoint = Position + cameraRotatedPosition;
+                ViewMatrix = Matrix.CreateLookAt(Position, LookAtPoint, Vector3.Up);
             }
 
-            //box.BoxIntersect(
-            Position = newPosition;
-            rotationMatrix = Matrix.CreateRotationX(rotationUpDown) * Matrix.CreateRotationY(rotationLeftRight);
-
-            //For rotating look at point around camera position
-            //Vector3 cameraRotatedTarget = Vector3.Transform(new Vector3(0,0,-1), rotationMatrix);
-            //Vector3 cameraFinalTarget = position + cameraRotatedTarget;
-            //Vector3 cameraRotatedUpVector = Vector3.Transform(Vector3.Up, rotationMatrix);
-            //viewMatrix = Matrix.CreateLookAt(position, cameraFinalTarget, cameraRotatedUpVector);
-
-            //For rotating camera position around look at point
-            Vector3 cameraRotatedPosition = Vector3.Transform(cameraReference, rotationMatrix);
-            //Vector3 cameraRotatedUpVector = Vector3.Transform(Vector3.Up, rotationMatrix);
-            LookAtPoint = Position + cameraRotatedPosition;
-            ViewMatrix = Matrix.CreateLookAt(Position, LookAtPoint, Vector3.Up);
-
-            //standard without rotation
-            //viewMatrix = Matrix.CreateLookAt(position, lookAtPoint, Vector3.Up);
         }
         #endregion
     }

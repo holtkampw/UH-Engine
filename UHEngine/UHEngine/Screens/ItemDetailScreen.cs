@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GermanGame.ScreenManagement;
+using UHEngine.ScreenManagement;
 using Microsoft.Xna.Framework.Graphics;
-using GermanGame.CoreObjects;
+using UHEngine.CoreObjects;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
 
-namespace GermanGame.Screens
+namespace UHEngine.Screens
 {
     class ItemDetailScreen : Screen
     {
+        #region Fields
         FindableObject model;
         SpriteFont font;
+        #endregion
 
+        #region Initialization
         public ItemDetailScreen(FindableObject model)
             : base("ItemDetail") 
         {
@@ -22,7 +25,9 @@ namespace GermanGame.Screens
             model.IsFound = true;
             this.SetStatus(ScreenStatus.Overlay);
         }
+        #endregion
 
+        #region LoadContent
         public override void LoadContent()
         {
             font = ScreenManager.Game.Content.Load<SpriteFont>("Menu\\menuItems");
@@ -32,7 +37,9 @@ namespace GermanGame.Screens
         {
 
         }
+        #endregion
 
+        #region Update
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
 
@@ -52,7 +59,9 @@ namespace GermanGame.Screens
                 ScreenManager.RemoveScreen(this);
             }
         }
+        #endregion
 
+        #region Draw
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
         {
             ScreenManager.SpriteBatch.Begin();
@@ -64,5 +73,6 @@ namespace GermanGame.Screens
         {
 
         }
+        #endregion
     }
 }

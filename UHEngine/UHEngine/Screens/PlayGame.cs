@@ -2,21 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GermanGame.ScreenManagement;
-using GermanGame.UI;
+using UHEngine.ScreenManagement;
+using UHEngine.UI;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using GermanGame.InputManagement;
-using GermanGame.CameraManagement;
-using GermanGame.CoreObjects;
+using UHEngine.InputManagement;
+using UHEngine.CameraManagement;
+using UHEngine.CoreObjects;
 using System.IO;
 using BoxCollider;
 
-namespace GermanGame.Screens
+namespace UHEngine.Screens
 {
-    using Screen = GermanGame.ScreenManagement.Screen;
+    using Screen = UHEngine.ScreenManagement.Screen;
     class PlayGame : Screen
     {
+        #region Fields
+
         #region UI
 
         const int NumObjects = 30;
@@ -36,15 +38,15 @@ namespace GermanGame.Screens
 
         #endregion UI
 
-        #region House
+        #region Level Model
         StaticModel stage = null;
         #endregion
 
         #region Collision
         StaticModel collideStage = null;
+        CollisionMesh levelCollision = null;
         #endregion
 
-        //CameraManager cameraManager;
         bool intersected = false;
 
         List<BoundingSphere> insideBoundingSpheres = new List<BoundingSphere>();
@@ -55,39 +57,66 @@ namespace GermanGame.Screens
 
         CameraManager cameraManager = null;
 
-        public PlayGame() : base("Play") { }
+#if WINDOWS_PHONE
+        VirtualThumbsticks thumbsticks = null;
+#endif
+        #endregion
 
+        #region Initialization
+        public PlayGame() : base("Play") { }
+        #endregion
+
+        #region Load Content
+        /// <summary>
+        /// Loads All Game Related Content
+        /// </summary>
         public override void LoadContent()
         {
-            SetupUI();
+            //UI Bar
+            //SetupUI();
 
             cameraManager = new CameraManager(ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Width,
                 ScreenManager.GraphicsDeviceManager.GraphicsDevice.Viewport.Height);
-            cameraManager.SetPosition(new Vector3(175.0f, 40.0f, 525.0f));
-            cameraManager.SetLookAtPoint(new Vector3(100.0f, 40.0f, 100.0f));
+            cameraManager.SetPosition(new Vector3(100.0f, 40.0f, 100.0f));
+            cameraManager.SetLookAtPoint(new Vector3(0.0f, 0.0f, 0.0f));
 
             ScreenManager.Game.Services.AddService(typeof(CameraManager), cameraManager);
 
+
+#if WINDOWS_PHONE
+            thumbsticks = new VirtualThumbsticks();
+#endif
+            SetupLevel();
             SetupObjects();
             SetupGateways();
             SetupDistractors();
             SetupKeyboard();
         }
 
+        /// <summary>
+        /// Reset's content if screen still in memory
+        /// </summary>
         public override void Reload()
         {
 
         }
 
+        /// <summary>
+        /// Send content to garbage collection when screen removed from memory
+        /// </summary>
         public override void UnloadContent()
         {
             ScreenManager.Game.Services.RemoveService(typeof(CameraManager));
         }
+        #endregion
 
+        #region Update
+        /// <summary>
+        /// Update's the player's input
+        /// </summary>
         public override void HandleInput()
         {
-            UpdatePicking();
-
+#if WINDOWS
             ScreenManager.InputManager.Update();
 
             if (ScreenManager.InputManager.CheckNewReleaseAction(InputAction.ExitGame))
@@ -119,67 +148,97 @@ namespace GermanGame.Screens
             if (ScreenManager.InputManager.CheckAction(InputAction.LookDown))
                 cameraManager.RotateDown();
 
-            Point mouse = new Point((int)ScreenManager.Cursor.Position.X,
-                (int)ScreenManager.Cursor.Position.Y);
 
-            Rectangle mouseRect = new Rectangle(mouse.X, mouse.Y, 10, 10);
-            ResetButtonStates();
-            if (uiBackgroundRect.Intersects(mouseRect))
+            //Test for Mouse/Menu Interaction
+            //UpdatePicking();
+            //Point mouse = new Point((int)ScreenManager.Cursor.Position.X,
+            //    (int)ScreenManager.Cursor.Position.Y);
+
+            //Rectangle mouseRect = new Rectangle(mouse.X, mouse.Y, 10, 10);
+            //ResetButtonStates();
+            //if (uiBackgroundRect.Intersects(mouseRect))
+            //{
+            //    foreach (IActionable actionableObject in actionableObjects)
+            //    {
+            //        FindableObject findableObject = actionableObject as FindableObject;
+            //        if (findableObject == null)
+            //            continue;
+
+            //        findableObject.UIItem.Status = UIItemStatus.Inactive;
+            //    }
+            //    //Check Items
+            //    foreach (IActionable actionableObject in actionableObjects)
+            //    {
+            //        FindableObject findableObject = actionableObject as FindableObject;
+            //        if (findableObject == null)
+            //            continue;
+
+            //        if (findableObject.UIItem.Bounds.Intersects(mouseRect))
+            //        {
+
+            //            //Check Mouse Click To Pick Right Status
+            //            if (ScreenManager.Cursor.IsLeftMouseButtonPressed())
+            //            {
+            //                findableObject.UIItem.Status = UIItemStatus.Click;
+
+            //                if (findableObject.UIItem.OurAction != null)
+            //                    findableObject.UIItem.OurAction();
+            //            }
+            //            else
+            //            {
+            //                findableObject.UIItem.Status = UIItemStatus.Hover;
+            //            }
+            //            break;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (IActionable actionableObject in actionableObjects)
+            //    {
+            //        FindableObject findableObject = actionableObject as FindableObject;
+            //        if (findableObject == null)
+            //            continue;
+
+            //        findableObject.UIItem.Status = UIItemStatus.Inactive;
+            //    }
+
+            //    if (ScreenManager.Cursor.isLeftMouseButtonJustReleased() && ScreenManager.Cursor.CurrentModel != null)
+            //    {
+            //        ScreenManager.Cursor.CurrentModel.Action();
+            //        // ScreenManager.ShowScreen(new ItemDetailScreen(ScreenManager.Cursor.CurrentModel));
+            //    }
+            //}
+#endif
+
+#if WINDOWS_PHONE
+            thumbsticks.Update();
+
+            if (thumbsticks.leftPosition.X > 0)
             {
-                foreach (IActionable actionableObject in actionableObjects)
-                {
-                    FindableObject findableObject = actionableObject as FindableObject;
-                    if (findableObject == null)
-                        continue;
-
-                    findableObject.UIItem.Status = UIItemStatus.Inactive;
-                }
-                //Check Items
-                foreach (IActionable actionableObject in actionableObjects)
-                {
-                    FindableObject findableObject = actionableObject as FindableObject;
-                    if (findableObject == null)
-                        continue;
-
-                    if (findableObject.UIItem.Bounds.Intersects(mouseRect))
-                    {
-
-                        //Check Mouse Click To Pick Right Status
-                        if (ScreenManager.Cursor.IsLeftMouseButtonPressed())
-                        {
-                            findableObject.UIItem.Status = UIItemStatus.Click;
-
-                            if (findableObject.UIItem.OurAction != null)
-                                findableObject.UIItem.OurAction();
-                        }
-                        else
-                        {
-                            findableObject.UIItem.Status = UIItemStatus.Hover;
-                        }
-                        break;
-                    }
-                }
+                cameraManager.StrafeForward();
             }
-            else
+            else if (thumbsticks.leftPosition.X < 0)
             {
-                foreach (IActionable actionableObject in actionableObjects)
-                {
-                    FindableObject findableObject = actionableObject as FindableObject;
-                    if (findableObject == null)
-                        continue;
-
-                    findableObject.UIItem.Status = UIItemStatus.Inactive;
-                }
-
-                if (ScreenManager.Cursor.isLeftMouseButtonJustReleased() && ScreenManager.Cursor.CurrentModel != null)
-                {
-                    ScreenManager.Cursor.CurrentModel.Action();
-                    // ScreenManager.ShowScreen(new ItemDetailScreen(ScreenManager.Cursor.CurrentModel));
-                }
+            //    cameraManager.StrafeBackward();
             }
+
+            if (thumbsticks.leftPosition.Y > 0)
+            {
+              //  cameraManager.RotateLeft();
+            }
+            else if (thumbsticks.leftPosition.Y < 0)
+            {
+                //cameraManager.RotateRight();
+            }
+        
+#endif
         }
 
-
+        /// <summary>
+        /// Update's all game logic
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             cameraManager.Update(collisionModels, gameTime);
@@ -190,29 +249,25 @@ namespace GermanGame.Screens
             }
 
         }
+        #endregion
 
+        #region Draw
         public override void Draw(Microsoft.Xna.Framework.GameTime gameTime)
         {
             ResetRenderStates();
             DrawPickableObjects(gameTime);
             DrawGatewayObjects(gameTime);
+            DrawLevel(gameTime);
 
-            DrawUI(gameTime);
-
-            if (intersected)
-            {
-                //getname
-                string modelName = ((StaticModel)ScreenManager.Cursor.CurrentModel).Name;
-                ScreenManager.SpriteBatch.Begin();
-                ScreenManager.SpriteBatch.DrawString(uiObjectsFoundFont, string.Format("Picked Object {0}", modelName), new Vector2(400, 100), Color.White);
-                ScreenManager.SpriteBatch.End();
-            }
-
+#if WINDOWS_PHONE
+            thumbsticks.Draw();
+#endif
 
 
         }
+        #endregion
 
-        #region UI
+        #region UI Helpers
         private void SetupUI()
         {
             uiBackground = ScreenManager.Game.Content.Load<Texture2D>(@"UI\background");
@@ -516,6 +571,17 @@ namespace GermanGame.Screens
         #endregion Triangle Picking Helpers
 
         #region Setup
+        private void SetupLevel()
+        {
+            stage = new StaticModel(ScreenManager.Game.Content.Load<Model>(@"Levels\uhEnginePlayground"), Vector3.Zero);
+            stage.Scale = 100;
+
+            collideStage = new StaticModel(ScreenManager.Game.Content.Load<Model>(@"Levels\uhEnginePlayground"), Vector3.Zero);
+
+            levelCollision = new CollisionMesh(stage.model, 1);
+            collisionModels.Add(collideStage);
+        }
+
         private void SetupObjects()
         {
             List<string> tempItemList = new List<string>();
@@ -607,19 +673,6 @@ namespace GermanGame.Screens
             collisionModels.Add(gatewayObject);
         }
 
-        //private void SetupHouse()
-        //{
-        //    floor = new StaticModel(ScreenManager.Game.Content.Load<Model>(@"House\floors"), housePosition);
-        //    floor.Scale = 10;
-        //    wall = new StaticModel(ScreenManager.Game.Content.Load<Model>(@"House\walls"), housePosition);
-        //    wall.Scale = 10;
-
-        //    collideWalls = new StaticModel(ScreenManager.Game.Content.Load<Model>(@"House\walls_collision"), Vector3.Zero);
-
-        //    // levelCollision = new CollisionMesh(collideWalls, 1);
-        //    collisionModels.Add(collideWalls);
-        //}
-
         private void SetupKeyboard()
         {
             ScreenManager.InputManager.AddInput(InputAction.MoveLeft, Microsoft.Xna.Framework.Input.Keys.A);
@@ -651,11 +704,10 @@ namespace GermanGame.Screens
             }
         }
 
-        //private void DrawHouse(GameTime gameTime)
-        //{
-        //    wall.Draw(gameTime);
-        //    floor.Draw(gameTime);
-        //}
+        private void DrawLevel(GameTime gameTime)
+        {
+            stage.Draw(gameTime);
+        }
         #endregion
 
     }

@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using GermanGame.ScreenManagement;
+using UHEngine.ScreenManagement;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GermanGame.UI
+namespace UHEngine.UI
 {
     class MainMenuUI : UIItem
     {
+        #region Fields
         public bool Previous = false;
         private int currentTime = 0;
         private int maxTime = 500;
         Texture2D icon = null;
         int alpha = 255;
         Vector2 iconPosition = Vector2.Zero;
+        #endregion
 
+        #region Initialization
         public MainMenuUI(Texture2D iconTexture, Vector2 iconPosition, Texture2D texture, Vector2 position) : base(texture, position)
         {
             this.icon = iconTexture;
@@ -36,6 +39,7 @@ namespace GermanGame.UI
             this.icon = iconTexture;
             this.iconPosition = iconPosition;
         }
+        #endregion
 
         public void SetStatus(UIItemStatus status)
         {
@@ -61,11 +65,12 @@ namespace GermanGame.UI
             }
         }
 
-
+        #region Draw
         public override void Draw(GameTime gameTime)
         {
             switch (Status)
             {
+                //Draw Correct Icon State
                 case UIItemStatus.Inactive:
                     ScreenManager.SpriteBatch.Draw(base.Texture, Bounds, base.InactiveSource, Color.White);
                     break;
@@ -80,25 +85,20 @@ namespace GermanGame.UI
             if (currentTime - gameTime.ElapsedGameTime.Milliseconds >0)
             {
                 currentTime -= gameTime.ElapsedGameTime.Milliseconds;
-                Console.WriteLine(currentTime);
                 
                 if(Status == UIItemStatus.Hover)
                 {
                     alpha += 1;
-                    //showing icon
-                    Console.WriteLine("IN: " + 255 * ((float)(maxTime - currentTime) / (float)maxTime));
-                    // (byte)MathHelper.Clamp((255.0f * ((float)(maxTime - currentTime)/(float)maxTime)), 0, 255)
+                    //showing icon - FADE in effect
                     Color c = Color.White;
                     c = c * ((float)(maxTime - currentTime) / (float)maxTime);
                     ScreenManager.SpriteBatch.Draw(this.icon, iconPosition, c);
 
                 } else {
-                    //hiding icon
+                    //hiding icon - FADE OUT effect
                     alpha -= 1;
-                    Console.WriteLine("OUT: " + 255.0f * ((float)currentTime/(float)maxTime));
                     Color c = Color.White;
                     c = c * ((float)currentTime / (float)maxTime);
-                    //(byte)MathHelper.Clamp((255.0f * ((float)currentTime/(float)maxTime)), 0, 255)
                     ScreenManager.SpriteBatch.Draw(this.icon, iconPosition, c);
                 }
 
@@ -110,5 +110,6 @@ namespace GermanGame.UI
             }
 
         }
+        #endregion
     }
 }
